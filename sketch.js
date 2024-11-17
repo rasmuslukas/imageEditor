@@ -5,7 +5,7 @@ let saveButton;
 let colorInput;
 
 function setup() {
-  createCanvas(2000, 600); // Set up canvas with a minimum width of 2000 pixels
+  createCanvas(windowWidth, windowHeight); // Set up canvas with a minimum width of 2000 pixels
   let uploadButton = createFileInput(handleFiles);
   uploadButton.position(10, 10);
   uploadButton.attribute('multiple', 'true');  // Allow multiple file uploads
