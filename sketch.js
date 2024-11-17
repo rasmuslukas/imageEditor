@@ -5,7 +5,7 @@ let saveButton;
 let colorInput;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight); // Set up canvas with a minimum width of 2000 pixels
+  createCanvas(windowWidth, windowHeight); 
   let uploadButton = createFileInput(handleFiles);
   uploadButton.position(10, 10);
   uploadButton.attribute('multiple', 'true');  // Allow multiple file uploads
@@ -25,7 +25,7 @@ function setup() {
   
   textSize(16);
   textAlign(CENTER, CENTER);
-  text('Upload images, randomize blend modes, and click Save Image.', width / 2, height / 2);
+  text('TASE 2025', width / 2, height / 2);
 }
 
 function draw() {
@@ -33,16 +33,8 @@ function draw() {
     return; // Return early if no images are loaded
   }
 
-  // Dynamically calculate the total canvas height based on the images' sizes
-  let totalHeight = 0;
-  for (let i = 0; i < images.length; i++) {
-    totalHeight = max(totalHeight, images[i].height);
-  }
-
-  // Ensure the canvas height is large enough to display all images
-  resizeCanvas(width, totalHeight);
-
-  background(255);  // Clear the canvas every time draw is called
+  // Clear the canvas
+  background(255);  
 
   // Draw all images with their respective blend modes, stacked on top of each other
   for (let i = 0; i < images.length; i++) {
@@ -55,23 +47,15 @@ function draw() {
       let imgHeight = images[i].height;
       let aspectRatio = imgWidth / imgHeight;
 
-      // Resize image to fit within the canvas while retaining its aspect ratio
-      let newWidth, newHeight;
+      // Resize image to fit within 60% of the canvas width while keeping the aspect ratio
+      let newWidth = width * 0.6;  // 60% of the canvas width
+      let newHeight = newWidth / aspectRatio; // Adjust height to maintain aspect ratio
 
-      // If the image is wider than the canvas, scale it to fit the width
-      if (imgWidth > imgHeight) {
-        newWidth = width * 0.8; // 80% of the canvas width
-        newHeight = newWidth / aspectRatio;
-      } else { // If the image is taller than wide, scale it to fit the height
-        newHeight = height * 0.8; // 80% of the canvas height
-        newWidth = newHeight * aspectRatio;
-      }
-
-      // Center the image horizontally on the canvas
+      // Center the image horizontally and vertically
       let xPos = (width - newWidth) / 2;
       let yPos = (height - newHeight) / 2;
 
-      // Draw the image at the same Y position, stacking them on top of each other
+      // Draw the image
       image(images[i], xPos, yPos, newWidth, newHeight);
       
       // Apply the color overlay on top of the image
@@ -110,28 +94,26 @@ function saveImage() {
   // Create an off-screen canvas to combine images
   let saveCanvas = createGraphics(width, height);
 
-  // Draw each image on the off-screen canvas at the same position
+  // Draw each image on the off-screen canvas
   for (let i = 0; i < images.length; i++) {
     if (images[i]) {
       // Apply the random blend mode
       saveCanvas.blendMode(eval(blendModes[i]));
-      // Draw the image on the off-screen canvas at the center
+      
+      // Calculate the aspect ratio of the image
       let imgWidth = images[i].width;
       let imgHeight = images[i].height;
       let aspectRatio = imgWidth / imgHeight;
-      let newWidth, newHeight;
 
-      if (imgWidth > imgHeight) {
-        newWidth = width * 0.8;
-        newHeight = newWidth / aspectRatio;
-      } else {
-        newHeight = height * 0.8;
-        newWidth = newHeight * aspectRatio;
-      }
+      // Resize image to fit within 60% of the canvas width
+      let newWidth = width * 0.6;
+      let newHeight = newWidth / aspectRatio;
 
+      // Center the image horizontally and vertically
       let xPos = (width - newWidth) / 2;
       let yPos = (height - newHeight) / 2;
 
+      // Draw the image on the off-screen canvas
       saveCanvas.image(images[i], xPos, yPos, newWidth, newHeight);
 
       // Apply the color overlay on top of the image
@@ -141,9 +123,6 @@ function saveImage() {
     }
   }
 
-  // Reset blend mode to BLEND for further drawings
-  saveCanvas.blendMode(BLEND);
-  
   // Save the combined image as a .png file
   saveCanvas.save('combined_image.png');
 }
